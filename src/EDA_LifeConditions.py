@@ -20,7 +20,7 @@ feat_end=21
 #
 #####################
 
-file1 = csv.reader(open('../../datasets/LifeConditions_Dataset.csv'), delimiter=',', quotechar='"')
+file1 = csv.reader(open('../datasets/LifeConditions_Dataset.csv'), delimiter=',', quotechar='"')
 
 #Read Header Line
 header = next(file1)
