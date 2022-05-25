@@ -4,6 +4,10 @@ import csv
 import seaborn as sns
 import pandas as pd
 import re
+import nltk
+
+# remove temporary if you get the error "NLTK stop words not found", you only need to download it once
+# nltk.download('stopwords')
 
 #############################################################################
 #
@@ -67,6 +71,10 @@ if len(target) == len(data):
     print("same lengths, OK")
 else:
     print("different lengths, NOT OK")
+print('\n')
+
+stopwords_list = nltk.corpus.stopwords.words('english')
+print("Stopwords in english: ",stopwords_list)
 
 #############################################################################
 #
@@ -88,6 +96,15 @@ clean_text("[^\(A-Za-z \)]", "", False)
 clean_text("http", "", True)
 # shorten all blank spaces that are longer than 1 space
 clean_text("  *", " ", False)
+
+# remove all english stopwords
+stopwords = ""
+for i in range(len(stopwords_list)):
+    stopwords += stopwords_list[i]
+    if i < len(stopwords_list)-1:
+        stopwords += "|"
+#clean_text(stopwords, "", False)  Doesn't work now
+
 
 print("Data[0]: ", data[0])
 
