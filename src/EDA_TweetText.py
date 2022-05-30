@@ -138,9 +138,3 @@ removing_small_words(3)
 
 print("After removing small words Data[0]: ", data[0])
 
-'''
-pd_dataframe = pd.DataFrame(data_with_target, columns=header)   # Create a dataframe object that can be used with pandas library functions
-correlogram = pd_dataframe.corr()   # Create a correlation matrix with this dataframe
-heatmap = sns.heatmap(pd_dataframe.corr())
-plt.show()
-'''
