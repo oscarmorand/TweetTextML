@@ -1,4 +1,6 @@
 import csv
+from tqdm import tqdm
+import sys
 
 #############################################################################
 #
@@ -10,12 +12,14 @@ target_idx = 0
 feat_start = 1
 feat_end = 5
 important_feat = 5
+entire_dataset = True
 n_desired = 100
 
 
-def parse_tt(simplified_header, data, target, all_data):
+def parse_raw_tt(simplified_header, data, target, all_data):
 
-    file1 = csv.reader(open('../../datasets/TweetText_Dataset.csv'), delimiter=',', quotechar='"')
+    file1 = open('../../datasets/TweetText_Dataset.csv')
+    reader = csv.reader(file1, delimiter=',', quotechar='"')
 
     # No Header Line in the dataset
     header = ["target", "id", "date", "flag", "user", "text"]
@@ -23,10 +27,13 @@ def parse_tt(simplified_header, data, target, all_data):
     simplified_header.append("text")
 
     # Read data
-    i = 0
-    for row in file1:
+    length = sum(1 for line in reader)
+    file1.seek(0)
+    for i in tqdm(range(length), desc="Loading Dataset...", ascii=False, ncols=100, position=0, leave=True, file=sys.stdout):
+        row = next(reader)
         if i > n_desired - 1:
-            break
+            if not entire_dataset:
+                break
 
         # Load Target
         temp = []
@@ -40,8 +47,7 @@ def parse_tt(simplified_header, data, target, all_data):
         for x in row:
             full_temp.append(x)
         all_data.append(full_temp)
-
-        i += 1
+    print()
 
     # Test Print
     print("Full Header [" + str(len(header)) + "]:", header)
@@ -57,4 +63,24 @@ def parse_tt(simplified_header, data, target, all_data):
         print("same lengths, OK")
     else:
         print("different lengths, NOT OK")
-    print('\n')
+
+    file1.close()
+
+
+def parse_clean_tt(header, data):
+    with open('../../datasets/TweetText_Clean_Dataset.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        for parameter in next(reader):
+            header.append(parameter)
+        length = sum(1 for line in reader)
+        csvfile.seek(0)
+        for i in tqdm(range(length), desc="Loading Clean Dataset...", ascii=False, ncols=100, position=0, leave=True, file=sys.stdout):
+            data.append(next(reader))
+
+
+def save_clean_tt(header, data):
+    with open('../../datasets/TweetText_Clean_Dataset.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(header)
+        for row in data:
+            writer.writerow(row)
