@@ -1,17 +1,6 @@
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
-import re
-import nltk
 import Parsing_TT as parsing
 import Preprocessing_TT as preprocessing
-from threading import Lock, Thread
-import multiprocessing as mp
-import time
-from tqdm import tqdm
 from os.path import exists
-import sys
 
 simplified_header = []
 data = []
@@ -26,7 +15,7 @@ data_with_target = []
 
 if __name__ == '__main__':
 
-    if not exists("../../datasets/TweetText_Clean_Dataset.csv"):
+    if not exists("../../../datasets/TweetText_Clean_Dataset.csv"):
         print("Clean dataset not found, parsing raw dataset...")
         parsing.parse_raw_tt(simplified_header, data, target, data_with_target)
         print("Parsing complete\n======== CLEANING ========")

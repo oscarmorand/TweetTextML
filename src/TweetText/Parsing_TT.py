@@ -18,7 +18,7 @@ n_desired = 100
 
 def parse_raw_tt(simplified_header, data, target, all_data):
 
-    file1 = open('../../datasets/TweetText_Dataset.csv')
+    file1 = open('../../../datasets/TweetText_Dataset.csv')
     reader = csv.reader(file1, delimiter=',', quotechar='"')
 
     # No Header Line in the dataset
@@ -68,7 +68,7 @@ def parse_raw_tt(simplified_header, data, target, all_data):
 
 
 def parse_clean_tt(header, data):
-    with open('../../datasets/TweetText_Clean_Dataset.csv', 'r') as csvfile:
+    with open('../../../datasets/TweetText_Clean_Dataset.csv', 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for parameter in next(reader):
             header.append(parameter)
@@ -79,7 +79,7 @@ def parse_clean_tt(header, data):
 
 
 def save_clean_tt(header, data):
-    with open('../../datasets/TweetText_Clean_Dataset.csv', 'w', newline='') as csvfile:
+    with open('../../../datasets/TweetText_Clean_Dataset.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(header)
         for row in data:
