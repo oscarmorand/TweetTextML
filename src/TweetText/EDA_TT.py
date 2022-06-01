@@ -15,7 +15,7 @@ data_with_target = []
 
 if __name__ == '__main__':
 
-    if not exists("../../../datasets/TweetText_Clean_Dataset.csv"):
+    if not exists(parsing.clean_dataset_path):
         print("Clean dataset not found, parsing raw dataset...")
         parsing.parse_raw_tt(simplified_header, data, target, data_with_target)
         print("Parsing complete\n======== CLEANING ========")
