@@ -4,14 +4,15 @@ import seaborn as sns
 import pandas as pd
 import re
 import nltk
-import Parsing_TT as parsing
-import Preprocessing_TT as preprocessing
 from threading import Lock, Thread
 import multiprocessing as mp
 import time
 from tqdm import tqdm
 from os.path import exists
 import sys
+import Parsing_TT as parsing
+import Preprocessing_TT as preprocessing
+
 
 simplified_header = []
 data = []
@@ -20,7 +21,7 @@ data_with_target = []
 
 #############################################################################
 #
-# Exploratory Data Analysis
+# Model Building
 #
 #####################
 
@@ -39,16 +40,6 @@ if __name__ == '__main__':
         parsing.parse_clean_tt(simplified_header, data)
         print("Parsing complete\n")
 
-    print("======== EDA ========")
+    print("======== Model Building ========")
 
-    negative_tweets = []
-    positive_tweets = []
-    for line in data:
-        if line[0] == '0':
-            negative_tweets.append(line[1])
-        elif line[0] == '4':
-            positive_tweets.append(line[1])
 
-    print("The first line of negative tweets:", negative_tweets[0])
-    if len(positive_tweets) > 0:
-        print("The first line of positive tweets:", positive_tweets[0])
