@@ -12,8 +12,9 @@ target_idx = 0
 feat_start = 1
 feat_end = 5
 important_feat = 5
-entire_dataset = True
-n_desired = 100
+entire_dataset = False
+n_desired = 1000
+
 
 raw_dataset_path = '../../../datasets/TweetText_Dataset.csv'
 clean_dataset_path = '../../../datasets/TweetText_Clean_Dataset.csv'
@@ -75,9 +76,20 @@ def parse_clean_tt(header, data):
         for parameter in next(reader):
             header.append(parameter)
         length = sum(1 for line in reader)
+        if not entire_dataset:
+            pos_n, neg_n = n_desired/2, n_desired/2
         csvfile.seek(0)
+        next(reader)
         for i in tqdm(range(length), desc="Loading Clean Dataset...", ascii=False, ncols=100, position=0, leave=True, file=sys.stdout):
-            data.append(next(reader))
+            row = next(reader)
+            if not entire_dataset:
+                if (row[0] == '0') and (neg_n > 0):
+                    neg_n -= 1
+                elif (row[0] == '4') and (pos_n > 0):
+                    pos_n -= 1
+                else:
+                    continue
+            data.append(row)
 
 
 def save_clean_tt(header, data):

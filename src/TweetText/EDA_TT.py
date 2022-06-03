@@ -4,7 +4,7 @@ from os.path import exists
 
 simplified_header = []
 data = []
-target = []
+targets = []
 data_with_target = []
 
 #############################################################################
@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     if not exists(parsing.clean_dataset_path):
         print("Clean dataset not found, parsing raw dataset...")
-        parsing.parse_raw_tt(simplified_header, data, target, data_with_target)
+        parsing.parse_raw_tt(simplified_header, data, targets, data_with_target)
         print("Parsing complete\n======== CLEANING ========")
         preprocessing.clean_dataset(data)
         print("Cleaning complete, saving the clean dataset...")
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         print("Saving complete\n")
     else:
         print("Clean dataset found, parsing clean dataset...")
-        parsing.parse_clean_tt(simplified_header, data)
+        parsing.parse_clean_tt(simplified_header, targets, data)
         print("Parsing complete\n")
 
     print("======== EDA ========")
