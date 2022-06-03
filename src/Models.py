@@ -18,7 +18,9 @@ warnings.filterwarnings("ignore")
 rand_st = 1
 n_cv = 5
 
-model_complete_name = {"rf": "Random Forest"}
+model_complete_name = {
+    "rf": "Random Forest"
+}
 
 
 def test_split(data, targets, model):

@@ -1,6 +1,5 @@
 from os.path import exists
-import Parsing_TT as parsing
-import Preprocessing_TT as preprocessing
+import Parsing_LC as parsing
 from sklearn.feature_extraction.text import CountVectorizer
 import random
 import warnings
