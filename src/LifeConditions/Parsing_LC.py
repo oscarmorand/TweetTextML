@@ -6,45 +6,43 @@ import csv
 #
 #####################
 
-target_idx=22
-feat_start=0
-feat_end=21
+target_idx = 22
+feat_start = 0
+feat_end = 21
+
+dataset_path = '../../datasets/LifeConditions_Dataset.csv'
 
 
-def parse_lc(header, data, target, data_with_target):
+def parse_lc(header, data):
+    with open(dataset_path, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quotechar='"')
 
-    file1 = csv.reader(open('../../datasets/LifeConditions_Dataset.csv'), delimiter=',', quotechar='"')
+        # Read Header Line
+        for parameter_name in next(reader):
+            header.append(parameter_name)
 
-    # Read Header Line
-    for parameter_name in next(file1):
-        header.append(parameter_name)
+        # Read data
+        for row in reader:
 
-    # Read data
-    for row in file1:
-        # Load Data
-        temp = []
-        for j in range(feat_start, feat_end + 1):
-            if row[j] == '':
-                temp.append(float())
+            temp = []
+            # Load Target
+            if row[target_idx] == '':
+                continue
             else:
-                temp.append(float(row[j]))
-        data.append(temp)
+                temp.append(row[target_idx])
 
-        # Load Target
-        if row[target_idx] == '':
-            continue
-        else:
-            target.append(float(row[target_idx]))
-            temp.insert(0, float(row[target_idx]))  # Add the target at the beginning of the data
+            # Load Data
+            temp2 = []
+            for j in range(feat_start, feat_end + 1):
+                if row[j] == '':
+                    temp2.append(float())
+                else:
+                    temp2.append(float(row[j]))
+            temp.append(temp2)
 
-        data_with_target.append(temp)  # Load everything in the complete array
+            data.append(temp)
 
-    # Test Print
-    print("Header [" + str(len(header)) + "]:")
-    print(header)
-    print("Data [" + str(len(data)) + "," + str(len(data[0])) + "]")
-    print(str(len(target)) + " targets, " + str(len(data)) + " data", end=': ')
-    if len(target) == len(data):
-        print("same lengths, OK")
-    else:
-        print("different lengths, NOT OK")
+        # Test Print
+        print("Header [" + str(len(header)) + "]:")
+        print(header)
+        print("Data [" + str(len(data)) + "," + str(len(data[0])) + "]")

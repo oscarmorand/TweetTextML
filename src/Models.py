@@ -1,5 +1,4 @@
 import time
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
 from sklearn.metrics import accuracy_score, roc_auc_score
@@ -42,16 +41,12 @@ evaluations = {
     "cross_validation": cross_validation
 }
 
-models = {
-    "rf": RandomForestClassifier(n_estimators=10, random_state=rand_st)
-}
-
 
 def test_model(data, targets, is_evaluation_used, model, model_name):
     for evaluation_name in evaluations:
         if is_evaluation_used[evaluation_name]:
             start_time = time.time()
-            print("We use", evaluation_name,"for the evaluation")
+            print("We use", evaluation_name, "for the evaluation")
             scores_acc, scores_auc = evaluations[evaluation_name](data, targets, model)
 
             print(model_complete_name[model_name], "Acc:", scores_acc)
@@ -59,7 +54,7 @@ def test_model(data, targets, is_evaluation_used, model, model_name):
             print("Runtime:", time.time() - start_time,"\n")
 
 
-def build_models(data, targets, is_evaluation_used, is_model_used):
+def build_models(data, targets, is_evaluation_used, models, is_model_used):
     for model_name in models:
         if is_model_used[model_name]:
             print("Let's build a", model_complete_name[model_name], "model!\n")

@@ -4,7 +4,8 @@ import Preprocessing_TT as preprocessing
 from sklearn.feature_extraction.text import CountVectorizer
 import random
 import warnings
-import FinalProjectML.src.Models as models
+from sklearn.ensemble import RandomForestClassifier
+import FinalProjectML.src.Models as ml
 warnings.filterwarnings("ignore")
 
 header = []
@@ -18,13 +19,19 @@ data_with_target = []
 #
 #####################
 
+rand_st = 1
+
 is_model_used = {
     "rf": True
 }
 
 is_evaluation_used = {
     "test_split": True,
-    "cross_validation" : True
+    "cross_validation": True
+}
+
+models = {
+    "rf": RandomForestClassifier(n_estimators=10, random_state=rand_st)
 }
 
 
@@ -51,5 +58,5 @@ if __name__ == '__main__':
     count_vectorizer = CountVectorizer(stop_words='english')
     cv = count_vectorizer.fit_transform([row[1] for row in data])
 
-    models.build_models(cv, targets, is_evaluation_used, is_model_used)
+    ml.build_models(cv, targets, is_evaluation_used, models, is_model_used)
 
