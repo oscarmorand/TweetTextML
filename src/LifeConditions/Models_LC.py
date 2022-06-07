@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 import random
 import warnings
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 import FinalProjectML.src.Models as ml
 warnings.filterwarnings("ignore")
 
@@ -19,6 +20,7 @@ data = []
 rand_st = 1
 
 is_model_used = {
+    "dt" : True,
     "rf": True
 }
 
@@ -28,6 +30,7 @@ is_evaluation_used = {
 }
 
 models = {
+    "dt": DecisionTreeClassifier(criterion='entropy', splitter='best', max_depth=None, min_samples_split=3, min_samples_leaf=1, max_features=None, random_state=rand_st),
     "rf": RandomForestClassifier(n_estimators=10, random_state=rand_st)
 }
 
