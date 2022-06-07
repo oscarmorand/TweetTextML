@@ -31,7 +31,7 @@ is_evaluation_used = {
 }
 
 models = {
-    "rf": RandomForestClassifier(n_estimators=10, random_state=rand_st)
+    "rf": RandomForestClassifier(n_estimators=100, random_state=rand_st)
 }
 
 
@@ -58,5 +58,5 @@ if __name__ == '__main__':
     count_vectorizer = CountVectorizer(stop_words='english')
     cv = count_vectorizer.fit_transform([row[1] for row in data])
 
-    ml.build_models(cv, targets, is_evaluation_used, models, is_model_used)
+    ml.build_models(cv, targets, is_evaluation_used, models, is_model_used, True)
 

@@ -91,7 +91,7 @@ def print_scores(acc_scores, auc_scores, all_labels):
     plt.show()
 
 
-def build_models(data, targets, is_evaluation_used, models, is_model_used):
+def build_models(data, targets, is_evaluation_used, models, is_model_used, do_print):
     acc_scores = []
     auc_scores = []
     all_labels = []
@@ -105,5 +105,7 @@ def build_models(data, targets, is_evaluation_used, models, is_model_used):
                 auc_scores.append(auc_score)
             for label in labels:
                 all_labels.append(label)
-            print("End of the evaluations for the",model_complete_name[model_name], "model\n")
-    print_scores(acc_scores, auc_scores, all_labels)
+            print("End of the evaluations for the", model_complete_name[model_name], "model\n")
+    if do_print:
+        print_scores(acc_scores, auc_scores, all_labels)
+    return acc_scores, auc_scores, all_labels

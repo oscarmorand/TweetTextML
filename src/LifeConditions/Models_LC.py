@@ -48,4 +48,4 @@ if __name__ == '__main__':
     print(data[0])
     print(targets[0])
 
-    ml.build_models([row[1] for row in data], targets, is_evaluation_used, models, is_model_used)
+    ml.build_models([row[1] for row in data], targets, is_evaluation_used, models, is_model_used, True)
