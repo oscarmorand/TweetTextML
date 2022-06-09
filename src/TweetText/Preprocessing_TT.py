@@ -7,12 +7,6 @@ import sys
 # remove temporary if you get the error "NLTK stop words not found", you only need to download it once
 # nltk.download('stopwords')
 
-#############################################################################
-#
-# Exploratory Data Analysis
-#
-#####################
-
 
 def clean_text(data, before, after, del_all_word, sub_word, bar_text=None):
     if del_all_word:

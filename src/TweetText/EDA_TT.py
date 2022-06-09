@@ -19,7 +19,7 @@ n_desired = -1
 nb_max_words = 10
 
 
-def show_most_used_words(words):
+def show_most_used_words(words, categorie):
     x = np.arange(nb_max_words)
     width = 0.35
 
@@ -27,7 +27,7 @@ def show_most_used_words(words):
     rects = ax.bar(x - width / 2, [word[1] for word in words], width)
 
     ax.set_ylabel('Nb Occurrences')
-    ax.set_title('Number of occurrences of the most used words')
+    ax.set_title("Number of occurrences of the "+str(nb_max_words)+"th most used words in "+categorie)
     ax.set_xticks(x, labels=[word[0] for word in words])
 
     ax.bar_label(rects, padding=3)
@@ -80,4 +80,4 @@ if __name__ == '__main__':
         max_words = max_words[:nb_max_words]
 
         print(str(nb_max_words)+"th most used words in", categorie+":", max_words)
-        show_most_used_words(max_words)
+        show_most_used_words(max_words, categorie)

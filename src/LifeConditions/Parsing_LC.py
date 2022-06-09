@@ -45,4 +45,4 @@ def parse_lc(header, data):
         # Test Print
         print("Header [" + str(len(header)) + "]:")
         print(header)
-        print("Data [" + str(len(data)) + "," + str(len(data[0])) + "]")
+        print("Data [" + str(len(data)) + "," + str(len(data[0][1])) + "]")
