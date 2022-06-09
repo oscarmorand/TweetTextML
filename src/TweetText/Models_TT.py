@@ -1,16 +1,15 @@
-from os.path import exists
 import Parsing_TT as parsing
 import Preprocessing_TT as preprocessing
 from sklearn.feature_extraction.text import CountVectorizer
 import random
 import warnings
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 import FinalProjectML.src.Models as ml
 warnings.filterwarnings("ignore")
 
 header = []
 data = []
-targets = []
 data_with_target = []
 
 #############################################################################
@@ -20,9 +19,11 @@ data_with_target = []
 #####################
 
 rand_st = 1
+use_second_dataset = True
 
 is_model_used = {
-    "rf": True
+    "dt": True,
+    "rf": False
 }
 
 is_evaluation_used = {
@@ -31,24 +32,19 @@ is_evaluation_used = {
 }
 
 models = {
+    "dt": DecisionTreeClassifier(criterion='entropy', splitter='best', max_depth=None, min_samples_split=3, min_samples_leaf=1, max_features=None, random_state=rand_st),
     "rf": RandomForestClassifier(n_estimators=100, random_state=rand_st)
 }
 
+n_desired = 1000
+# Put -1 if all dataset is desired
 
 if __name__ == '__main__':
 
-    if not exists(parsing.clean_dataset_path):
-        print("Clean dataset not found, parsing raw dataset...")
-        parsing.parse_raw_tt(header, data, targets, data_with_target)
-        print("Parsing complete\n======== CLEANING ========")
-        preprocessing.clean_dataset(data)
-        print("Cleaning complete, saving the clean dataset...")
-        parsing.save_clean_tt(header, data)
-        print("Saving complete\n")
-    else:
-        print("Clean dataset found, parsing clean dataset...")
-        parsing.parse_clean_tt(header, data)
-        print("Parsing complete\n")
+    parsing.parse_tt(header, data, n_desired)
+
+    if use_second_dataset:
+        parsing.merge_sentiment_tweet_dataset(data)
 
     print("======== Model Building ========")
 

@@ -66,10 +66,6 @@ def test_model(data, targets, is_evaluation_used, model, model_name):
 
 
 def print_scores(acc_scores, auc_scores, all_labels):
-    print(all_labels)
-    print(acc_scores)
-    print(auc_scores)
-
     x = np.arange(len(all_labels))
     print(x)
     width = 0.35
@@ -87,7 +83,6 @@ def print_scores(acc_scores, auc_scores, all_labels):
     ax.bar_label(rects2, padding=3)
 
     fig.tight_layout()
-
     plt.show()
 
 
