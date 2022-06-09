@@ -24,7 +24,7 @@ model_complete_name = {
 }
 
 
-def test_split(data, targets, model):
+def test_split(data, targets, model, param=None):
     X_train, X_test, y_train, y_test = train_test_split(data, targets, test_size=.2, stratify=targets,
                                                         random_state=rand_st)
     model.fit(X_train, y_train)
@@ -32,9 +32,9 @@ def test_split(data, targets, model):
     return accuracy_score(prediction, y_test), roc_auc_score(prediction, y_test)
 
 
-def cross_validation(data, targets, model):
+def cross_validation(data, targets, model, param=None):
     scorers = {'Accuracy': 'accuracy', 'roc_auc': 'roc_auc'}
-    scores = cross_validate(estimator=model, X=data, y=targets, scoring=scorers, cv=n_cv)
+    scores = cross_validate(estimator=model, X=data, y=targets, scoring=scorers, cv=param)
     return scores['test_Accuracy'].mean(), scores['test_roc_auc'].mean()
 
 
@@ -51,7 +51,7 @@ def test_model(data, targets, is_evaluation_used, model, model_name):
         if is_evaluation_used[evaluation_name]:
             start_time = time.time()
             print("\tWe use", evaluation_name, "for the evaluation")
-            scores_acc, scores_auc = evaluations[evaluation_name](data, targets, model)
+            scores_acc, scores_auc = evaluations[evaluation_name](data, targets, model, n_cv)
             all_scores[0].append(scores_acc)
             all_scores[1].append(scores_auc)
             labels.append(evaluation_name + "\nwith\n" + model_complete_name[model_name])
@@ -79,7 +79,6 @@ def print_scores(acc_scores, auc_scores, all_labels):
     ax.bar_label(rects2, padding=3)
 
     fig.tight_layout()
-    plt.show()
 
 
 def build_models(data, targets, is_evaluation_used, models, is_model_used, do_print):
@@ -100,3 +99,15 @@ def build_models(data, targets, is_evaluation_used, models, is_model_used, do_pr
     if do_print:
         print_scores(acc_scores, auc_scores, all_labels)
     return acc_scores, auc_scores, all_labels
+
+
+def cv_range(data, targets, models, min, max, step):
+    plt.figure()
+    cvs = range(min, max, step)
+    for model in models:
+        acc = []
+        for cv in cvs:
+            acc.append(cross_validation(data, targets, model[1], cv)[0])
+        plt.plot(cvs, acc, label=model_complete_name[model[0]])
+    plt.legend(loc="upper left")
+
