@@ -1,6 +1,7 @@
 import time
 from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.model_selection import cross_validate, train_test_split
+from sklearn.model_selection import ParameterGrid
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
@@ -44,13 +45,22 @@ evaluations = {
 }
 
 
-def test_model(data, targets, is_evaluation_used, model, model_name):
+def test_model(data, targets, is_evaluation_used, model, model_name, feat_select):
     all_scores = ([], [])
     labels = []
     for evaluation_name in evaluations:
         if is_evaluation_used[evaluation_name]:
             start_time = time.time()
             print("\tWe use", evaluation_name, "for the evaluation")
+
+            '''
+            sets = ParameterGrid( dictionnaire )
+            for i in range(sets.__len__):
+                classifier.set_params(**sets[i])
+                
+                joblib.dump() #pour enregistrer
+            '''
+
             scores_acc, scores_auc = evaluations[evaluation_name](data, targets, model, n_cv)
             all_scores[0].append(scores_acc)
             all_scores[1].append(scores_auc)
@@ -79,16 +89,17 @@ def print_scores(acc_scores, auc_scores, all_labels):
     ax.bar_label(rects2, padding=3)
 
     fig.tight_layout()
+    plt.show()
 
 
-def build_models(data, targets, is_evaluation_used, models, is_model_used, do_print):
+def build_models(data, targets, is_evaluation_used, models, is_model_used, do_print, feat_select):
     acc_scores = []
     auc_scores = []
     all_labels = []
     for model_name in models:
         if is_model_used[model_name]:
             print("Let's build a", model_complete_name[model_name], "model!\n")
-            scores, labels = test_model(data, targets, is_evaluation_used, models[model_name], model_name)
+            scores, labels = test_model(data, targets, is_evaluation_used, models[model_name], model_name, feat_select)
             for acc_score in scores[0]:
                 acc_scores.append(acc_score)
             for auc_score in scores[1]:
@@ -111,3 +122,41 @@ def cv_range(data, targets, models, min, max, step):
         plt.plot(cvs, acc, label=model_complete_name[model[0]])
     plt.legend(loc="upper left")
 
+
+def test_model_parameters_range(data, targets, model, parameters, model_name):
+    fig, axs = plt.subplots(2, len(parameters))
+    fig.suptitle("Parameter variation of " + model_complete_name[model_name])
+    #plt.subplots_adjust(0.04, 0.23, 0.99, 0.9)
+    #wm = plt.get_current_fig_manager()
+    #wm.window.state('zoomed')
+    i = 0
+    for parameter_name in parameters:
+        print("\tVariation of", parameter_name, "...")
+        values = parameters[parameter_name]
+        grid = ParameterGrid({parameter_name: values})
+        scores_acc, scores_auc, runtimes = [], [], []
+        for j in range(len(grid)):
+            model.set_params(**grid[j])
+            start_time = time.time()
+            score_acc, score_auc = cross_validation(data, targets, model, n_cv)
+            scores_acc.append(score_acc)
+            scores_auc.append(score_auc)
+            runtimes.append(time.time()-start_time)
+
+        axs[0, i].plot(values, scores_acc, label="Accuracy")
+        axs[0, i].plot(values, scores_auc, label="AUC")
+        axs[0, i].legend(loc="best")
+        axs[0, i].set_title(parameter_name)
+
+        axs[1, i].plot(values, runtimes, label="Runtimes")
+        axs[1, i].legend(loc="best")
+
+        i += 1
+    plt.show()
+
+
+def parameter_range(data, targets, models, used_models, all_parameters):
+    for model_name in models:
+        if used_models[model_name]:
+            print("Variations for", model_complete_name[model_name], "model...")
+            test_model_parameters_range(data, targets, models[model_name], all_parameters[model_name], model_name)

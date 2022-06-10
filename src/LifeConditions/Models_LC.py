@@ -19,6 +19,9 @@ data = []
 #####################
 
 rand_st = 1
+feat_select = False
+default_models_scores = True
+parameter_range_models_scores = True
 show_graph = True
 do_remove_useless_feature = True
 normalize = True
@@ -54,13 +57,47 @@ models = {
     "nn": MLPClassifier(activation='logistic', solver='adam',alpha=0.0001, max_iter=1000, hidden_layer_sizes=(10,), random_state=rand_st)
 }
 
+models_params= {
+    "dt": {
+        "criterion": ['gini', 'entropy'],
+        "splitter": ['best', 'random'],
+        "min_samples_split": [2, 3, 4],
+        "min_samples_leaf": [1, 2],
+        "max_features": ['auto', 'sqrt', 'log2'],
+    },
+    "rf": {
+        "n_estimators": [20, 50, 100, 150, 200, 250],
+        "criterion": ['gini', 'entropy', 'log_loss'],
+    },
+    "gb": {
+        "loss": ['log_loss', 'deviance', 'exponential'],
+        "learning_rate": [0.05, 0.1, 0.2],
+        "n_estimators": [50, 100, 200],
+        "criterion": ['friedman_mse', 'squared_error', 'mse'],
+        "max_depth": [2, 3, 4],
+        "min_sample_split": [1, 2, 3],
+    },
+    "ada": {
+        "n_estimators": [20, 50, 100],
+        "learning_rate": [0.5, 1.0, 2.0],
+    },
+    "nn": {
+        "activation": ['identity', 'logistic', 'tanh', 'relu'],
+        "solver": ['lbfgs', 'sgd', 'adam'],
+        "alpha": [0.0001],
+        "learning_rate": ['constant', 'invscaling', 'adaptive'],
+        "max_iter": [100, 200, 500, 1000],
+        "hidden_layer_sizes": [(10,), (20,), (50,), (100,)],
+    }
+}
+
 
 if __name__ == '__main__':
 
     print("Parsing dataset...")
     parsing.parse_lc(header, data)
 
-    print("======== Model Building ========")
+    print("======== Preprocessing ========")
 
     random.shuffle(data)
 
@@ -69,5 +106,12 @@ if __name__ == '__main__':
     if normalize:
         preprocessing.normalization(data, header, normalization_table)
 
+    print("======== Model Building ========")
+
     targets = [row[0] for row in data]
-    ml.build_models([row[1] for row in data], targets, is_evaluation_used, models, is_model_used, show_graph)
+    just_data = [row[1] for row in data]
+    if default_models_scores:
+        ml.build_models(just_data, targets, is_evaluation_used, models, is_model_used, show_graph, feat_select)
+
+    if parameter_range_models_scores:
+        ml.parameter_range(just_data, targets, models, is_model_used, models_params)
