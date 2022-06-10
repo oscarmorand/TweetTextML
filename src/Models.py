@@ -7,11 +7,6 @@ import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
 
-#############################################################################
-#
-# Model Building
-#
-#####################
 
 rand_st = 1
 n_cv = 5
@@ -23,6 +18,9 @@ model_complete_name = {
     "ada": "Ada Boosting",
     "nn": "Neural Network"
 }
+
+
+# ============ Evaluation methods ============
 
 
 def test_split(data, targets, model, param=None):
@@ -44,22 +42,16 @@ evaluations = {
     "cross_validation": cross_validation
 }
 
+# ============ Default models scores ============
 
-def test_model(data, targets, is_evaluation_used, model, model_name, feat_select):
+
+def test_model(data, targets, is_evaluation_used, model, model_name):
     all_scores = ([], [])
     labels = []
     for evaluation_name in evaluations:
         if is_evaluation_used[evaluation_name]:
             start_time = time.time()
             print("\tWe use", evaluation_name, "for the evaluation")
-
-            '''
-            sets = ParameterGrid( dictionnaire )
-            for i in range(sets.__len__):
-                classifier.set_params(**sets[i])
-                
-                joblib.dump() #pour enregistrer
-            '''
 
             scores_acc, scores_auc = evaluations[evaluation_name](data, targets, model, n_cv)
             all_scores[0].append(scores_acc)
@@ -92,14 +84,14 @@ def print_scores(acc_scores, auc_scores, all_labels):
     plt.show()
 
 
-def build_models(data, targets, is_evaluation_used, models, is_model_used, do_print, feat_select):
+def build_models(data, targets, is_evaluation_used, models, is_model_used, do_print):
     acc_scores = []
     auc_scores = []
     all_labels = []
     for model_name in models:
         if is_model_used[model_name]:
             print("Let's build a", model_complete_name[model_name], "model!\n")
-            scores, labels = test_model(data, targets, is_evaluation_used, models[model_name], model_name, feat_select)
+            scores, labels = test_model(data, targets, is_evaluation_used, models[model_name], model_name)
             for acc_score in scores[0]:
                 acc_scores.append(acc_score)
             for auc_score in scores[1]:
@@ -112,20 +104,30 @@ def build_models(data, targets, is_evaluation_used, models, is_model_used, do_pr
     return acc_scores, auc_scores, all_labels
 
 
-def cv_range(data, targets, models, min, max, step):
-    plt.figure()
-    cvs = range(min, max, step)
+# ============ Models scores with changing parameters ============
+
+
+def cv_range(data, targets, models, cv_range):
+    fig, axs = plt.subplots(2)
+    fig.suptitle("Accuracy for each number of cross-validation folds")
+    axs[0].set(xlabel='Number of cv folds', ylabel='Accuracy')
+    axs[1].set(xlabel='Number of cv folds', ylabel='Runtime')
     for model in models:
-        acc = []
-        for cv in cvs:
+        acc, runtimes = [], []
+        for cv in cv_range:
+            start_time = time.time()
             acc.append(cross_validation(data, targets, model[1], cv)[0])
-        plt.plot(cvs, acc, label=model_complete_name[model[0]])
-    plt.legend(loc="upper left")
+            runtimes.append(time.time()-start_time)
+        axs[0].plot(cv_range, acc, label=model_complete_name[model[0]])
+        axs[0].legend(loc="upper left")
+        axs[1].plot(cv_range, runtimes, label=model_complete_name[model[0]])
+        axs[1].legend(loc="upper left")
+    plt.show()
 
 
 def test_model_parameters_range(data, targets, model, parameters, model_name):
     fig, axs = plt.subplots(2, len(parameters))
-    fig.suptitle("Parameter variation of " + model_complete_name[model_name])
+    fig.suptitle("Parameter variation for " + model_complete_name[model_name]+" model")
     #plt.subplots_adjust(0.04, 0.23, 0.99, 0.9)
     #wm = plt.get_current_fig_manager()
     #wm.window.state('zoomed')
@@ -133,7 +135,7 @@ def test_model_parameters_range(data, targets, model, parameters, model_name):
     for parameter_name in parameters:
         print("\tVariation of", parameter_name, "...")
         values = parameters[parameter_name]
-        grid = ParameterGrid({parameter_name: values})
+        grid = ParameterGrid({parameter_name: values, 'random_state': [rand_st]})
         scores_acc, scores_auc, runtimes = [], [], []
         for j in range(len(grid)):
             model.set_params(**grid[j])

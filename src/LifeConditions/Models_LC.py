@@ -19,11 +19,16 @@ data = []
 #####################
 
 rand_st = 1
-feat_select = False
-default_models_scores = True
-parameter_range_models_scores = True
+
+do_default_models_scores = False
+do_parameter_range_models_scores = False
+do_cv_range = True
+
 show_graph = True
-do_remove_useless_feature = True
+cv_range = range(2, 10, 2)
+
+feat_select = False
+remove_useless_feature = True
 normalize = True
 
 # ['Survey_id', 'Ville_id', 'sex', 'Age', 'Married', 'Number_children', 'education_level', 'total_members',
@@ -94,24 +99,34 @@ models_params= {
 
 if __name__ == '__main__':
 
+    print("======== Load Data ========")
+
     print("Parsing dataset...")
     parsing.parse_lc(header, data)
 
     print("======== Preprocessing ========")
 
     random.shuffle(data)
-
-    if do_remove_useless_feature:
-        header = preprocessing.remove_useless_features(data, header, useful_features)
     if normalize:
         preprocessing.normalization(data, header, normalization_table)
+
+    print("======== Feature Selection ========")
+
+    if remove_useless_feature:
+        header = preprocessing.remove_useless_features(data, header, useful_features)
+    if feat_select:
+        preprocessing.feature_selection(data)
 
     print("======== Model Building ========")
 
     targets = [row[0] for row in data]
     just_data = [row[1] for row in data]
-    if default_models_scores:
-        ml.build_models(just_data, targets, is_evaluation_used, models, is_model_used, show_graph, feat_select)
 
-    if parameter_range_models_scores:
+    if do_default_models_scores:
+        ml.build_models(just_data, targets, is_evaluation_used, models, is_model_used, show_graph)
+
+    if do_cv_range:
+        ml.cv_range(just_data, targets, [(model,models[model]) for model in models if is_model_used[model]], cv_range)
+
+    if do_parameter_range_models_scores:
         ml.parameter_range(just_data, targets, models, is_model_used, models_params)

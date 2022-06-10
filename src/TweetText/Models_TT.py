@@ -22,10 +22,14 @@ data_with_target = []
 #####################
 
 rand_st = 1
-show_models_scores = False
-parameter_range_models_scores = True
+
+do_default_models_scores = False
+do_parameter_range_models_scores = False
+do_cv_range = True
+
+cv_range = range(2, 5, 1)
 show_graph = True
-show_cv_range = True
+
 use_second_dataset = False
 n_desired = 1000
 # Put -1 if all dataset is desired
@@ -33,8 +37,8 @@ n_desired = 1000
 is_model_used = {
     "dt": True,
     "rf": True,
-    "gb": False,
-    "ada": False,
+    "gb": True,
+    "ada": True,
     "nn": False
 }
 
@@ -88,12 +92,14 @@ models_params= {
 
 if __name__ == '__main__':
 
+    print("======== Load Data ========")
+
     parsing.parse_tt(header, data, n_desired)
 
     if use_second_dataset:
         parsing.merge_sentiment_tweet_dataset(data)
 
-    print("======== Model Building ========")
+    print("======== Preprocessing ========")
 
     random.shuffle(data)
     targets = [row[0] for row in data]
@@ -101,13 +107,17 @@ if __name__ == '__main__':
     count_vectorizer = CountVectorizer(stop_words='english')
     vectors = count_vectorizer.fit_transform([row[1] for row in data])
 
-    if show_models_scores:
+    print("======== Feature Selection ========")
+
+    print("======== Model Building ========")
+
+    if do_default_models_scores:
         ml.build_models(vectors, targets, is_evaluation_used, models, is_model_used, show_graph)
 
-    if show_cv_range:
-        ml.cv_range(vectors, targets, [(model,models[model]) for model in models if is_model_used[model]], 2, 10, 2)
+    if do_cv_range:
+        ml.cv_range(vectors, targets, [(model,models[model]) for model in models if is_model_used[model]], cv_range)
 
-    if parameter_range_models_scores:
+    if do_parameter_range_models_scores:
         ml.parameter_range(vectors, targets, models, is_model_used, models_params)
 
     plt.show()
