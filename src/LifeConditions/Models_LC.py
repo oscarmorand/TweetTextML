@@ -20,9 +20,9 @@ data = []
 
 rand_st = 1
 
-do_default_models_scores = True
+do_default_models_scores = False
 do_parameter_range_models_scores = False
-do_cv_range = False
+do_cv_range = True
 
 show_graph = True
 cv_range = range(2, 10, 2)
@@ -44,9 +44,9 @@ normalization_table = {'Age', 'Number_children', 'education_level', 'total_membe
 is_model_used = {
     "dt": True,
     "rf": True,
-    "gb": False,
-    "ada": False,
-    "nn": False
+    "gb": True,
+    "ada": True,
+    "nn": True
 }
 
 is_evaluation_used = {
@@ -80,7 +80,7 @@ models_params= {
         "n_estimators": [50, 100, 200],
         "criterion": ['friedman_mse', 'squared_error', 'mse'],
         "max_depth": [2, 3, 4],
-        "min_sample_split": [1, 2, 3],
+        #"min_sample_split": [1, 2, 3],
     },
     "ada": {
         "n_estimators": [20, 50, 100],
@@ -89,7 +89,7 @@ models_params= {
     "nn": {
         "activation": ['identity', 'logistic', 'tanh', 'relu'],
         "solver": ['lbfgs', 'sgd', 'adam'],
-        "alpha": [0.0001],
+        #"alpha": [0.0001],
         "learning_rate": ['constant', 'invscaling', 'adaptive'],
         "max_iter": [100, 200, 500, 1000],
         "hidden_layer_sizes": [(10,), (20,), (50,), (100,)],

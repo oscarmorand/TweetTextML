@@ -27,10 +27,10 @@ do_default_models_scores = False
 do_parameter_range_models_scores = False
 do_cv_range = True
 
-cv_range = range(2, 5, 1)
+cv_range = range(2, 10, 2)
 show_graph = True
 
-use_second_dataset = False
+use_second_dataset = True
 n_desired = 1000
 # Put -1 if all dataset is desired
 
