@@ -20,9 +20,9 @@ data = []
 
 rand_st = 1
 
-do_default_models_scores = False
+do_default_models_scores = True
 do_parameter_range_models_scores = False
-do_cv_range = True
+do_cv_range = False
 
 show_graph = True
 cv_range = range(2, 10, 2)
