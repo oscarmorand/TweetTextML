@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier, AdaBoostClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
 import FinalProjectML.src.Models as ml
 warnings.filterwarnings("ignore")
 
@@ -23,23 +24,24 @@ data_with_target = []
 
 rand_st = 1
 
-do_default_models_scores = False
+do_default_models_scores = True
 do_parameter_range_models_scores = False
-do_cv_range = True
+do_cv_range = False
 
 cv_range = range(2, 10, 2)
 show_graph = True
 
-use_second_dataset = True
+use_second_dataset = False
 n_desired = 1000
 # Put -1 if all dataset is desired
 
 is_model_used = {
-    "dt": True,
-    "rf": True,
-    "gb": True,
-    "ada": True,
-    "nn": False
+    "dt": False,
+    "rf": False,
+    "gb": False,
+    "ada": False,
+    "nn": False,
+    "svm": True
 }
 
 is_evaluation_used = {
@@ -52,7 +54,8 @@ models = {
     "rf": RandomForestClassifier(n_estimators=10, random_state=rand_st),
     "gb": GradientBoostingClassifier(n_estimators=10, loss='deviance', learning_rate=0.1, max_depth=3, min_samples_split=3, random_state=rand_st),
     "ada": AdaBoostClassifier(n_estimators=10, base_estimator=None, learning_rate=0.1, random_state=rand_st),
-    "nn": MLPClassifier(activation='logistic', solver='adam',alpha=0.0001, max_iter=1000, hidden_layer_sizes=(10,), random_state=rand_st)
+    "nn": MLPClassifier(activation='logistic', solver='adam',alpha=0.0001, max_iter=1000, hidden_layer_sizes=(10,), random_state=rand_st),
+    "svm": SVC(decision_function_shape='ovo')
 }
 
 models_params= {

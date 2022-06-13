@@ -16,7 +16,8 @@ model_complete_name = {
     "rf": "Random Forest",
     "gb": "Gradient Boosting",
     "ada": "Ada Boosting",
-    "nn": "Neural Network"
+    "nn": "Neural Network",
+    "svm": "Support Vector Machines"
 }
 
 
