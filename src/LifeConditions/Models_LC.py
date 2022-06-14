@@ -20,14 +20,18 @@ data = []
 
 rand_st = 1
 
-do_default_models_scores = True
-do_parameter_range_models_scores = True
-do_cv_range = True
+do_default_models_scores = False
+do_parameter_range_models_scores = False
+do_cv_range = False
+do_feat_select_range = True
 
 show_graph = True
 cv_range = range(2, 10, 2)
 
 feat_select = True
+fs_types = [0, 1, 2, 3]
+fs_type = 3
+fs_params = [None, 5, None, 5]
 remove_useless_feature = True
 normalize = False
 
@@ -113,16 +117,20 @@ if __name__ == '__main__':
 
     if remove_useless_feature:
         preprocessing.remove_useless_features(just_data, header, useless_features)
-    if feat_select:
-        preprocessing.feature_selection(just_data, targets, header, 2, None)
+    if feat_select and not do_feat_select_range:
+        preprocessing.feature_selection(just_data, targets, header, fs_type, fs_params[fs_type-1])
 
     print("\n======== Model Building ========")
 
     if do_default_models_scores:
         ml.build_models(just_data, targets, is_evaluation_used, models, is_model_used, show_graph)
 
+    used_models = [(model,models[model]) for model in models if is_model_used[model]]
     if do_cv_range:
-        ml.cv_range(just_data, targets, [(model,models[model]) for model in models if is_model_used[model]], cv_range)
+        ml.cv_range(just_data, targets, used_models, cv_range)
 
     if do_parameter_range_models_scores:
         ml.parameter_range(just_data, targets, models, is_model_used, models_params)
+
+    if do_feat_select_range:
+        ml.feat_select_range(just_data, targets, header, used_models, fs_types, fs_params)

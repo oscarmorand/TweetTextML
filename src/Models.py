@@ -5,6 +5,7 @@ from sklearn.model_selection import ParameterGrid
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
+import FinalProjectML.src.LifeConditions.Preprocessing_LC as preprocessing
 warnings.filterwarnings("ignore")
 
 
@@ -170,3 +171,32 @@ def parameter_range(data, targets, models, used_models, all_parameters):
         if used_models[model_name]:
             print("Variations for", model_complete_name[model_name], "model...")
             test_model_parameters_range(data, targets, models[model_name], all_parameters[model_name], model_name)
+
+
+def feat_select_range(data, targets, header, models, fs_range, fs_params):
+    print("Let's test our models with a variation of the type of feature selection")
+    fig, axs = plt.subplots(2)
+    fig.suptitle("Accuracy for each type of feature selection")
+    axs[0].set(xlabel='Feature selection type', ylabel='Accuracy')
+    axs[1].set(xlabel='Feature selection type', ylabel='Runtime')
+    for model in models:
+        print("Variation of feature selection type for "+model_complete_name[model[0]]+" model")
+        acc, runtimes = [], []
+        for i in range(len(fs_range)):
+            fs_type, fs_param = fs_range[i], fs_params[i]
+            cp_data, cp_header = data.copy(), header.copy()
+            if fs_type != 0:
+                preprocessing.feature_selection(cp_data, targets, cp_header, fs_type, fs_param)
+            start_time = time.time()
+            acc.append(cross_validation(cp_data, targets, model[1], n_cv)[0])
+            runtimes.append(time.time()-start_time)
+        axs[0].plot(fs_range, acc, label=model_complete_name[model[0]])
+        axs[1].plot(fs_range, runtimes, label=model_complete_name[model[0]])
+
+    fs_names = ["No feature\nselection", "Stepwise Recursive\nBackwards Feature\nemoval", "Wrapper Select\nia model", "Univariate Feature\nSelection - Chi-squared"]
+    axs[0].set_xticks([r for r in range(len(fs_range))], fs_names)
+    axs[0].legend(loc="upper left")
+    axs[1].set_xticks([r for r in range(len(fs_range))], fs_names)
+    axs[1].legend(loc="upper left")
+    print()
+    plt.show()

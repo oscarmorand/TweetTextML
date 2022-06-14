@@ -54,17 +54,18 @@ def normalization(data, useful_features, normalization_table):
 # ============ Feature selection ============
 
 
-def feature_selection(data, targets, header, fs_type, fs_param):
+def feature_selection(data, targets, header, fs_type, fs_param=None):
     if fs_type == 1:
-        clf = RandomForestClassifier(n_estimators=200, max_depth=None, min_samples_split=3, criterion='entropy', random_state=rand_st)
-        sel = RFE(clf, n_features_to_select=fs_param[0], step=.1)
+        clf = RandomForestClassifier(n_estimators=200, max_depth=None, min_samples_split=3, criterion='entropy',
+                                     random_state=rand_st)
+        sel = RFE(clf, n_features_to_select=fs_param, step=.1)
     elif fs_type == 2:
         clf = GradientBoostingClassifier(n_estimators=100, loss='deviance', learning_rate=0.1, max_depth=3,
-                                             min_samples_split=3, random_state=rand_st)
+                                         min_samples_split=3, random_state=rand_st)
         sel = SelectFromModel(clf, prefit=False, threshold='mean',
-                                  max_features=None)  # to select only based on max_features, set to integer value and set threshold=-np.inf
-    else: #fs_type == 3 or something else
-        sel = SelectKBest(chi2, k=fs_param[0])
+                              max_features=None)
+    else:
+        sel = SelectKBest(chi2, k=fs_param)
 
     fit_mod = sel.fit(data, targets)
     sel_idx = fit_mod.get_support()
