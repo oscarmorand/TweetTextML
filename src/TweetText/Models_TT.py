@@ -24,7 +24,7 @@ data_with_target = []
 
 rand_st = 1
 
-do_default_models_scores = True
+do_default_models_scores = False
 do_parameter_range_models_scores = False
 do_cv_range = False
 
@@ -36,12 +36,12 @@ n_desired = 1000
 # Put -1 if all dataset is desired
 
 is_model_used = {
-    "dt": False,
-    "rf": False,
-    "gb": False,
-    "ada": False,
+    "dt": True,
+    "rf": True,
+    "gb": True,
+    "ada": True,
     "nn": False,
-    "svm": True
+    "svm": False
 }
 
 is_evaluation_used = {
@@ -104,13 +104,13 @@ if __name__ == '__main__':
 
     print("======== Preprocessing ========")
 
+    print("Random shuffle...")
     random.shuffle(data)
     targets = [row[0] for row in data]
 
+    print("Using Count Vectorizer...")
     count_vectorizer = CountVectorizer(stop_words='english')
     vectors = count_vectorizer.fit_transform([row[1] for row in data])
-
-    print("======== Feature Selection ========")
 
     print("======== Model Building ========")
 

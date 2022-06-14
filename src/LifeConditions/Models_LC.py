@@ -20,22 +20,19 @@ data = []
 
 rand_st = 1
 
-do_default_models_scores = False
-do_parameter_range_models_scores = False
+do_default_models_scores = True
+do_parameter_range_models_scores = True
 do_cv_range = True
 
 show_graph = True
 cv_range = range(2, 10, 2)
 
-feat_select = False
+feat_select = True
 remove_useless_feature = True
-normalize = True
+normalize = False
 
-# ['Survey_id', 'Ville_id', 'sex', 'Age', 'Married', 'Number_children', 'education_level', 'total_members',
-#   'gained_asset', 'durable_asset', 'save_asset', 'living_expenses', 'other_expenses', 'incoming_salary',
-#   'incoming_own_farm', 'incoming_business', 'incoming_no_business', 'incoming_agricultural', 'farm_expenses',
-#   'labor_primary', 'lasting_investment', 'no_lasting_investmen', 'depressed']
-useful_features = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]
+
+useless_features = ['Survey_id', 'Ville_id']
 
 normalization_table = {'Age', 'Number_children', 'education_level', 'total_members', 'gained_asset', 'durable_asset',
                        'save_asset', 'living_expenses', 'other_expenses', 'incoming_agricultural', 'farm_expenses',
@@ -104,23 +101,22 @@ if __name__ == '__main__':
     print("Parsing dataset...")
     parsing.parse_lc(header, data)
 
-    print("======== Preprocessing ========")
+    print("\n======== Preprocessing ========")
 
     random.shuffle(data)
     if normalize:
         preprocessing.normalization(data, header, normalization_table)
 
-    print("======== Feature Selection ========")
-
-    if remove_useless_feature:
-        header = preprocessing.remove_useless_features(data, header, useful_features)
-    if feat_select:
-        preprocessing.feature_selection(data)
-
-    print("======== Model Building ========")
-
+    print("\n======== Feature Selection ========")
     targets = [row[0] for row in data]
     just_data = [row[1] for row in data]
+
+    if remove_useless_feature:
+        preprocessing.remove_useless_features(just_data, header, useless_features)
+    if feat_select:
+        preprocessing.feature_selection(just_data, targets, header, 2, None)
+
+    print("\n======== Model Building ========")
 
     if do_default_models_scores:
         ml.build_models(just_data, targets, is_evaluation_used, models, is_model_used, show_graph)

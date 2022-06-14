@@ -29,7 +29,11 @@ def test_split(data, targets, model, param=None):
                                                         random_state=rand_st)
     model.fit(X_train, y_train)
     prediction = model.predict(X_test)
-    return accuracy_score(prediction, y_test), roc_auc_score(prediction, y_test)
+    try:
+        roc = roc_auc_score(prediction, y_test)
+    except:
+        roc = 0
+    return accuracy_score(prediction, y_test), roc
 
 
 def cross_validation(data, targets, model, param=None):
@@ -109,29 +113,31 @@ def build_models(data, targets, is_evaluation_used, models, is_model_used, do_pr
 
 
 def cv_range(data, targets, models, cv_range):
+    print("Let's test our models with a variation of number of cv folds")
     fig, axs = plt.subplots(2)
     fig.suptitle("Accuracy for each number of cross-validation folds")
     axs[0].set(xlabel='Number of cv folds', ylabel='Accuracy')
     axs[1].set(xlabel='Number of cv folds', ylabel='Runtime')
     for model in models:
+        print("Variation of cv folds for "+model_complete_name[model[0]]+" model\n\twith", end='')
         acc, runtimes = [], []
         for cv in cv_range:
+            print(cv,end=', ')
             start_time = time.time()
             acc.append(cross_validation(data, targets, model[1], cv)[0])
             runtimes.append(time.time()-start_time)
+        print("folds")
         axs[0].plot(cv_range, acc, label=model_complete_name[model[0]])
         axs[0].legend(loc="upper left")
         axs[1].plot(cv_range, runtimes, label=model_complete_name[model[0]])
         axs[1].legend(loc="upper left")
+    print()
     plt.show()
 
 
 def test_model_parameters_range(data, targets, model, parameters, model_name):
     fig, axs = plt.subplots(2, len(parameters))
     fig.suptitle("Parameter variation for " + model_complete_name[model_name]+" model")
-    #plt.subplots_adjust(0.04, 0.23, 0.99, 0.9)
-    #wm = plt.get_current_fig_manager()
-    #wm.window.state('zoomed')
     i = 0
     for parameter_name in parameters:
         print("\tVariation of", parameter_name, "...")
@@ -159,6 +165,7 @@ def test_model_parameters_range(data, targets, model, parameters, model_name):
 
 
 def parameter_range(data, targets, models, used_models, all_parameters):
+    print("Let's test our models with a variation of the parameters")
     for model_name in models:
         if used_models[model_name]:
             print("Variations for", model_complete_name[model_name], "model...")
