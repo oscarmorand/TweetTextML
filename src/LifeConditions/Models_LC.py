@@ -28,9 +28,9 @@ do_feat_select_range = True
 show_graph = True
 cv_range = range(2, 10, 2)
 
-feat_select = True
+feat_select = False
 fs_types = [0, 1, 2, 3]
-fs_type = 3
+fs_type = 1
 fs_params = [None, 5, None, 5]
 remove_useless_feature = True
 normalize = False

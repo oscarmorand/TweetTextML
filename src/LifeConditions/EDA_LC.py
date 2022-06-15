@@ -75,13 +75,18 @@ def depressed_by_two_features(feature1, feature2):
 
 def give_values_dict(feature):
     values_dict = {}
+    total_dict = {}
     for row in data:
+        if row[1][feature] in total_dict:
+            total_dict[row[1][feature]] += 1
+        else:
+            total_dict[row[1][feature]] = 1
         if float(row[0]) == 1.:
             if row[1][feature] in values_dict:
                 values_dict[row[1][feature]] += 1
             else:
                 values_dict[row[1][feature]] = 1
-    return values_dict
+    return values_dict, total_dict
 
 
 def show_all_nbr_depressed_plot(features, length):
@@ -89,25 +94,30 @@ def show_all_nbr_depressed_plot(features, length):
     fig, axs = plt.subplots(rows, length)
     i = 0
     for (feature, v_step) in features:
-        values_dict = give_values_dict(feature)
+        values_dict, total_dict = give_values_dict(feature)
         y, x = int(i / length), int(i % length)
         axs[y, x].set_xlabel(header[feature])
-        axs[y, x].set_ylabel("Number of depressed people")
+        axs[y, x].set_ylabel("depression")
         if v_step:
-            axs[y, x].set_title("Number of depressed people depending on " + header[feature] + " (using grouping with a step of " + str(v_step) + ")")
             max_value = max(values_dict)
-            group_values = [0] * (int(max_value / v_step) + 1)
+            group_values = [(0, 0)] * (int(max_value / v_step) + 1)
             for value in values_dict:
                 index = int(value / v_step)
-                group_values[index] += values_dict[value]
-            axs[y, x].bar(list(range(0, (int(max_value / v_step) + 1) * v_step, v_step)), group_values, (100 / (v_step + 1)))
+                new_tuple = (group_values[index][0] + values_dict[value], group_values[index][1] + total_dict[value])
+                group_values[index] = new_tuple
+            group_values_2 = []
+            for j in range(len(group_values)):
+                if group_values[j][1] != 0:
+                    group_values_2.append(group_values[j][0] / group_values[j][1])
+            X = list(range(10, (int(max_value / v_step) + 1) * v_step, v_step))
+            print(group_values_2)
+            axs[y, x].bar(X, group_values_2, (100 / (v_step + 1)))
         else:
-            axs[y, x].set_title("Number of depressed people depending on " + header[feature])
             def takeFirst(elem):
                 return elem[0]
             data_list = []
             for value in values_dict:
-                data_list.append((value, values_dict[value]))
+                data_list.append((value, values_dict[value]/total_dict[value]))
             data_list.sort(key=takeFirst)
             axs[y, x].plot([row[0] for row in data_list], [row[1] for row in data_list])
         i += 1
@@ -131,7 +141,7 @@ if __name__ == '__main__':
 
     show_all_bool_bar_plots([3, 5, 6, 13], 2)  # sex, age, number of children, education level, incoming salary
 
-    show_all_nbr_depressed_plot([(3, None), (3, 10), (5, None)], 2)  # age, age(group of 10 years), nbr of children
+    show_all_nbr_depressed_plot([(3, None), (3, 10), (5, None),(6, None)], 2)  # age, age(group of 10 years), nbr of children
 
     depressed_by_two_features(4, 2)  # married and sex
 

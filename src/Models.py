@@ -18,7 +18,7 @@ model_complete_name = {
     "gb": "Gradient Boosting",
     "ada": "Ada Boosting",
     "nn": "Neural Network",
-    "svm": "Support Vector Machines"
+    "svm": "Support \nVector Machines"
 }
 
 
@@ -195,8 +195,8 @@ def feat_select_range(data, targets, header, models, fs_range, fs_params):
 
     fs_names = ["No feature\nselection", "Stepwise Recursive\nBackwards Feature\nemoval", "Wrapper Select\nia model", "Univariate Feature\nSelection - Chi-squared"]
     axs[0].set_xticks([r for r in range(len(fs_range))], fs_names)
-    axs[0].legend(loc="upper left")
+    axs[0].legend(loc="best")
     axs[1].set_xticks([r for r in range(len(fs_range))], fs_names)
-    axs[1].legend(loc="upper left")
+    axs[1].legend(loc="best")
     print()
     plt.show()
