@@ -18,10 +18,10 @@ important_feat = 5
 
 target_normalization = {'0': '1', '4': '0'}
 
-raw_dataset_path = '../../../datasets/TweetText_Dataset.csv'
-clean_dataset_path = '../../../datasets/TweetText_Clean_Dataset.csv'
-raw_dataset2_path = '../../../datasets/SentimentTweets_Dataset.csv'
-clean_dataset2_path = '../../../datasets/SentimentTweets_Clean_Dataset.csv'
+raw_dataset_path = '../../datasets/TweetText_Dataset.csv'
+clean_dataset_path = '../../datasets/TweetText_Clean_Dataset.csv'
+raw_dataset2_path = '../../datasets/SentimentTweets_Dataset.csv'
+clean_dataset2_path = '../../datasets/SentimentTweets_Clean_Dataset.csv'
 
 full_header = ["target", "id", "date", "flag", "user", "text"]
 

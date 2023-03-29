@@ -31,7 +31,7 @@ do_cv_range = True
 cv_range = range(2, 10, 2)
 show_graph = True
 
-use_second_dataset = True
+use_second_dataset = False
 n_desired = 1000
 # Put -1 if all dataset is desired
 
